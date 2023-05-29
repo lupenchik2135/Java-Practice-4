@@ -1,37 +1,46 @@
 package com.example.fourthpractice.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.example.fourthpractice.entities.UserEntity;
+import com.example.fourthpractice.models.enums.UserRole;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class UserModel implements UserDetails {
 
     private String email;
 
     private String password;
+    private UUID userId;
 
     private UserRole userRole;
-    public static UserModel fromEntity (UserEntity userEntity){
-        return  new UserModel(
+
+    private Set<SimpleGrantedAuthority> authoritySet;
+
+    public static UserModel fromEntity(UserEntity userEntity){
+        return new UserModel(
                 userEntity.getEmail(),
-                userEntity.getPassword()
+                userEntity.getPassword(),
+                userEntity.getUserId(),
+                userEntity.getUserRole(),
+                userEntity.getUserRole().getAuthorities()
         );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(userRole.name()));
+        return this.authoritySet;
     }
 
     @Override
@@ -43,6 +52,7 @@ public class UserModel implements UserDetails {
     public String getUsername() {
         return email;
     }
+    public UUID getUserId() { return userId; }
 
     @Override
     public boolean isAccountNonExpired() {

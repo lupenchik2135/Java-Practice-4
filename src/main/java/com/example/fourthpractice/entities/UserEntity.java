@@ -1,5 +1,6 @@
 package com.example.fourthpractice.entities;
 
+import com.example.fourthpractice.models.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,6 +29,8 @@ public class UserEntity {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     /*
         SELECT *
@@ -37,6 +40,7 @@ public class UserEntity {
      */
 
     @OneToMany
-    @JoinColumn(name = "userId")
-    private List<AccountEntity> personalAccounts;
+    @JoinColumn(name = "user_id")
+    private List<AccountEntity> ownedAccounts;
 }
+

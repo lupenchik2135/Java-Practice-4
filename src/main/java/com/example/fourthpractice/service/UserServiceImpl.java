@@ -2,16 +2,21 @@ package com.example.fourthpractice.service;
 
 import com.example.fourthpractice.dao.UserDao;
 import com.example.fourthpractice.entities.UserEntity;
+import com.example.fourthpractice.messages.requests.UserDeleteRequest;
 import com.example.fourthpractice.messages.requests.UserLoginRequest;
 import com.example.fourthpractice.messages.requests.UserRegisterRequest;
 import com.example.fourthpractice.models.TokenModel;
 import com.example.fourthpractice.models.UserModel;
 import com.example.fourthpractice.models.enums.UserRole;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @Slf4j
@@ -23,9 +28,13 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
+    private final HttpServletRequest request;
 
     @Override
     public TokenModel register(UserRegisterRequest registerRequest) {
+        if(userDao.getUserByEmail(registerRequest.getEmail()) != null){
+            throw new SecurityException("Пользователь с таким email уже существует.");
+        }
 
         UserEntity newUser = userDao.createUser(
                 registerRequest.getEmail(),
@@ -57,5 +66,20 @@ public class UserServiceImpl implements UserService {
         UserModel user = UserModel.fromEntity(userDao.getUserByEmail(loginRequest.getEmail()));
 
         return new TokenModel(user.getEmail(), jwtService.generateToken(user), null);
+    }
+    public String delete(UserDeleteRequest userDeleteRequest){
+        if(userDao.getUserById(jwtService.parseToken(getTokenFromHeader()).getUserId()) != null){
+            userDao.deleteUser(userDeleteRequest.getEmail(), userDeleteRequest.getPassword());
+            return "Пользователь полностью удалён";
+        }
+        return "В доступе отказано";
+    }
+    private String getTokenFromHeader(){
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println(header);
+        if(ObjectUtils.isEmpty(header)){
+            return null;
+        }
+        return header;
     }
 }

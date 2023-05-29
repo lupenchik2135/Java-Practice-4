@@ -18,17 +18,20 @@ import java.util.UUID;
 @ToString
 @Builder
 public class UserModel implements UserDetails {
-
+    private UUID userId;
     private String email;
 
     private String password;
 
     private UserRole userRole;
 
+
     private Set<SimpleGrantedAuthority> authoritySet;
 
     public static UserModel fromEntity(UserEntity userEntity){
+        System.out.println("User entity in userModel" + userEntity.getUserId());
         return new UserModel(
+                userEntity.getUserId(),
                 userEntity.getEmail(),
                 userEntity.getPassword(),
                 userEntity.getUserRole(),
@@ -49,6 +52,9 @@ public class UserModel implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+    public UUID getUserId() {
+        return userId;
     }
 
     @Override

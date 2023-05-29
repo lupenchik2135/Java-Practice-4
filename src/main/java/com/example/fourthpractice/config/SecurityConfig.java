@@ -26,12 +26,15 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf().disable()
                 .sessionManagement(custom -> custom.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .authorizeHttpRequests(customizer ->
                         customizer
                                 .requestMatchers(HttpMethod.POST,"auth/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"auth/**").permitAll()
                                 .requestMatchers("error/**").permitAll()
                                 .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
 
     }

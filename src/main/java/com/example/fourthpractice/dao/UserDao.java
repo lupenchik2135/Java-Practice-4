@@ -2,6 +2,7 @@ package com.example.fourthpractice.dao;
 
 import com.example.fourthpractice.entities.UserEntity;
 import com.example.fourthpractice.models.enums.UserRole;
+import com.example.fourthpractice.repositories.AccountRepository;
 import com.example.fourthpractice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class UserDao {
 
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
 
     public boolean isUserExist(String email){
@@ -38,14 +40,27 @@ public class UserDao {
                 .build());
 
     }
+    public boolean deleteUser(String email, String password){
+        if(userRepository.findByEmail(email).get() != null){
+            userRepository.findByEmail(email).get().getOwnedAccounts().forEach(accountEntity -> accountRepository.delete(accountEntity));
+            userRepository.deleteById(userRepository.findByEmail(email).get().getUserId());
+            return true;
+        }
+        return false;
+    }
 
     public UserEntity getUserByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow();
+        return userRepository.findByEmail(email).orElse(null);
+    }
+    public UserEntity getUserById(UUID userId){
+        System.out.println(userId);
+        return userRepository.findById(userId).orElseThrow();
     }
 
     public String getPasswordHash(String email){
         return userRepository.findByEmail(email).orElseThrow().getPassword();
     }
+
 }
 //    public void deleteUser(String email, String password){
 //        if(isUserExist(email) && userRepository.findByEmail(email).get().getPassword() == password) {

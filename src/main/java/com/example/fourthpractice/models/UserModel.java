@@ -22,7 +22,6 @@ public class UserModel implements UserDetails {
     private String email;
 
     private String password;
-    private UUID userId;
 
     private UserRole userRole;
 
@@ -32,7 +31,6 @@ public class UserModel implements UserDetails {
         return new UserModel(
                 userEntity.getEmail(),
                 userEntity.getPassword(),
-                userEntity.getUserId(),
                 userEntity.getUserRole(),
                 userEntity.getUserRole().getAuthorities()
         );
@@ -52,7 +50,6 @@ public class UserModel implements UserDetails {
     public String getUsername() {
         return email;
     }
-    public UUID getUserId() { return userId; }
 
     @Override
     public boolean isAccountNonExpired() {

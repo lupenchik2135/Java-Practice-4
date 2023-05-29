@@ -20,6 +20,14 @@ public class UserDao {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    public UUID getUserIdByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow().getUserId();
+    }
+
+    public String getEmailById(UUID userId){
+        return userRepository.findById(userId).orElseThrow().getEmail();
+    }
+
     public UserEntity createUser(String email, String password, UserRole role){
 
         return userRepository.save(UserEntity.builder()
@@ -30,21 +38,17 @@ public class UserDao {
                 .build());
 
     }
-//    public void deleteUser(String email, String password){
-//        if(isUserExist(email) && userRepository.findByEmail(email).get().getPassword() == password) {
-//            userRepository.delete(userRepository.findByEmail(email).orElseThrow());
-//        }
-//    }
 
     public UserEntity getUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow();
     }
-    public UserEntity getUserById(UUID uuid){
-        return userRepository.findById(uuid).orElseThrow();
-    }
-
 
     public String getPasswordHash(String email){
         return userRepository.findByEmail(email).orElseThrow().getPassword();
     }
 }
+//    public void deleteUser(String email, String password){
+//        if(isUserExist(email) && userRepository.findByEmail(email).get().getPassword() == password) {
+//            userRepository.delete(userRepository.findByEmail(email).orElseThrow());
+//        }
+//    }

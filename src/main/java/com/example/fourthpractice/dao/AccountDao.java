@@ -1,20 +1,20 @@
-package com.example.fourthpractice.dao;
-
-import com.example.fourthpractice.entities.AccountEntity;
-import com.example.fourthpractice.entities.UserEntity;
-import com.example.fourthpractice.models.UserModel;
-import com.example.fourthpractice.models.enums.UserRole;
-import com.example.fourthpractice.repositories.AccountRepository;
-import com.example.fourthpractice.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.util.UUID;
-
-@Component
-@RequiredArgsConstructor
-public class AccountDao {
+//package com.example.fourthpractice.dao;
+//
+//import com.example.fourthpractice.entities.AccountEntity;
+//import com.example.fourthpractice.entities.UserEntity;
+//import com.example.fourthpractice.models.UserModel;
+//import com.example.fourthpractice.models.enums.UserRole;
+//import com.example.fourthpractice.repositories.AccountRepository;
+//import com.example.fourthpractice.repositories.UserRepository;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.stereotype.Component;
+//
+//import java.time.LocalDate;
+//import java.util.UUID;
+//
+//@Component
+//@RequiredArgsConstructor
+//public class AccountDao {
 //    private final AccountRepository accountRepository;
 //
 //    public AccountEntity createAccount(float money, UserEntity accountOwner){
@@ -35,5 +35,5 @@ public class AccountDao {
 //    public AccountEntity getAccountByUser(UserEntity accountOwner){
 //        return accountRepository.findByUser(accountOwner).orElseThrow();
 //    }
-
-}
+//
+//}

@@ -38,9 +38,9 @@ public class UserEntity {
           JOIN tickets ON
                tickets.user_id = users.user_id
      */
-
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    private List<AccountEntity> ownedAccounts;
+//
+//    @OneToMany
+//    @JoinColumn(name = "user_id")
+//    private List<AccountEntity> ownedAccounts;
 }
 

@@ -19,10 +19,11 @@ public class JwtServiceImpl implements JwtService{
     @Override
     public String generateToken(UserModel userModel) {
         return Jwts.builder()
-                .signWith(getSignKey())
+                .signWith(getSigninKey())
                 .setSubject(userModel.getEmail())
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(100)))
+                .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .claim("userRole", userModel.getUserRole())
                 .compact();
     }
 
@@ -30,7 +31,7 @@ public class JwtServiceImpl implements JwtService{
     public UserModel parseToken(String token) {
         return null;
     }
-    private Key getSignKey(){
+    private Key getSigninKey() {
         byte[] keyBytes = Base64.getDecoder().decode(ENC_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }

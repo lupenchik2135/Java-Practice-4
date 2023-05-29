@@ -29,7 +29,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(customizer ->
                         customizer
                                 .requestMatchers(HttpMethod.POST,"auth/**").permitAll()
-                                .requestMatchers("tickets/redeem", "tickets/").hasAuthority("ADMIN")
                                 .requestMatchers("error/**").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

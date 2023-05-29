@@ -1,13 +1,13 @@
-package com.example.fourthpractice.models;
-
-import com.example.fourthpractice.entities.AccountEntity;
-import com.example.fourthpractice.entities.UserEntity;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
-import java.util.UUID;
-
+//package com.example.fourthpractice.models;
+//
+//import com.example.fourthpractice.entities.AccountEntity;
+//import com.example.fourthpractice.entities.UserEntity;
+//import lombok.*;
+//import org.springframework.security.core.GrantedAuthority;
+//
+//import java.util.Collection;
+//import java.util.UUID;
+//
 //@Data
 //@AllArgsConstructor
 //@NoArgsConstructor
@@ -32,6 +32,6 @@ import java.util.UUID;
 //    public UUID getAccountId() {return accountId; }
 //    public UUID getOwnerAccountId() { return ownerAccount.getUserId(); }
 //}
-
-
-
+//
+//
+//

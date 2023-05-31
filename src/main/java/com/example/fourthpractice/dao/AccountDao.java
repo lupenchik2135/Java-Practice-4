@@ -17,23 +17,30 @@ import java.util.UUID;
 public class AccountDao {
     private final AccountRepository accountRepository;
 
-    public AccountEntity createAccount(float money, UserEntity accountOwner){
+    public AccountEntity createAccount(float money, UserEntity accountOwner) {
         return accountRepository.save(AccountEntity.builder()
                 .money(money)
                 .accountOwner(accountOwner)
                 .build());
 
     }
-    public boolean isAccountExist(UserEntity accountOwner){
-        return accountRepository.findByAccountOwner(accountOwner).isPresent();
+
+    public boolean isAccountExist(int accountId, UserEntity accountOwner) {
+        return accountRepository.findByAccountIdAndAccountOwner(accountId, accountOwner).isPresent();
     }
-    public void deleteAccount(UserEntity accountOwner, UUID accountId){
-        if(isAccountExist(accountOwner) && accountRepository.findByAccountOwner(accountOwner).get().getAccountId() == accountId) {
-            accountRepository.delete(accountRepository.findByAccountOwner(accountOwner).orElseThrow());
-        }
+
+    public void deleteAccount(int accountId) {
+       accountRepository.deleteAccountEntitiesByAccountId(accountId);
     }
-    public AccountEntity getAccountByUser(UserEntity accountOwner){
-        return accountRepository.findByAccountOwner(accountOwner).orElseThrow();
+
+    public AccountEntity getAccountById(int accountId) {
+        return accountRepository.findByAccountId(accountId).orElseThrow();
+    }
+    public void changeMoneyAmount(int accountId, float money){
+        accountRepository.changeMoneyAmount(accountId, money);
+    };
+    public AccountEntity getAccountByIdAndOwner(int accountId, UserEntity accountOwner) {
+        return accountRepository.findByAccountIdAndAccountOwner(accountId, accountOwner).orElseThrow();
     }
 
 }

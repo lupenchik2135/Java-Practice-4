@@ -1,6 +1,5 @@
 package com.example.fourthpractice.controllers;
 
-import com.example.fourthpractice.messages.requests.UserDeleteRequest;
 import com.example.fourthpractice.messages.requests.UserLoginRequest;
 import com.example.fourthpractice.messages.requests.UserRegisterRequest;
 import com.example.fourthpractice.messages.responses.UserDeleteResponse;
@@ -22,7 +21,8 @@ public class UserController {
 
     //http://localhost:8080/auth/register
     @PostMapping("/register")
-    public UserRegisterResponse register(@RequestBody UserRegisterRequest registerRequest){
+    public UserRegisterResponse register(@RequestBody UserRegisterRequest registerRequest) {
+        log.info(registerRequest.getEmail());
         TokenModel tokenModel = userService.register(registerRequest);
         return new UserRegisterResponse(
                 tokenModel.getEmail(),
@@ -33,16 +33,17 @@ public class UserController {
 
     //http://localhost:8080/auth/login
     @PostMapping("/login")
-    public UserLoginResponse login(@RequestBody UserLoginRequest loginRequest){
+    public UserLoginResponse login(@RequestBody UserLoginRequest loginRequest) {
         log.info(loginRequest.toString());
 
         TokenModel tokenModel = userService.login(loginRequest);
 
         return new UserLoginResponse(tokenModel.getEmail(), tokenModel.getToken());
     }
+
     @DeleteMapping("/delete")
-    public UserDeleteResponse delete(@RequestBody UserDeleteRequest deleteRequest){
-        return new UserDeleteResponse(userService.delete(deleteRequest));
+    public UserDeleteResponse delete() {
+        return new UserDeleteResponse(userService.deleteUser());
     }
 
 }

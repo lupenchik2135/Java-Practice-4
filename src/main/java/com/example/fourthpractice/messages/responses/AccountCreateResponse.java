@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class AccountCreateResponse {
     private float money;
-    private UUID accountId;
-    private UserEntity accountOwner;
+    private int accountId;
+    private String accountOwnerEmail;
 }

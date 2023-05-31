@@ -18,7 +18,7 @@ import java.util.UUID;
 @ToString
 @Builder
 public class UserModel implements UserDetails {
-    private UUID userId;
+
     private String email;
 
     private String password;
@@ -26,22 +26,17 @@ public class UserModel implements UserDetails {
     private UserRole userRole;
 
 
-    private Set<SimpleGrantedAuthority> authoritySet;
-
-    public static UserModel fromEntity(UserEntity userEntity){
-        System.out.println("User entity in userModel" + userEntity.getUserId());
+    public static UserModel fromEntity(UserEntity userEntity) {
         return new UserModel(
-                userEntity.getUserId(),
                 userEntity.getEmail(),
                 userEntity.getPassword(),
-                userEntity.getUserRole(),
-                userEntity.getUserRole().getAuthorities()
+                userEntity.getUserRole()
         );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authoritySet;
+        return Collections.singleton(new SimpleGrantedAuthority(userRole.name()));
     }
 
     @Override
@@ -53,9 +48,7 @@ public class UserModel implements UserDetails {
     public String getUsername() {
         return email;
     }
-    public UUID getUserId() {
-        return userId;
-    }
+
 
     @Override
     public boolean isAccountNonExpired() {

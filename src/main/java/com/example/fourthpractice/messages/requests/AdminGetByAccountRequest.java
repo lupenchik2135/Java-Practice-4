@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class UserDeleteRequest {
-    String password;
-    String email;
+public class AdminGetByAccountRequest {
+    int accountId;
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,16 +32,16 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    /*
-        SELECT *
-          FROM users
-          JOIN tickets ON
-               tickets.user_id = users.user_id
-     */
-
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    private List<AccountEntity> ownedAccounts;
-}
+    @OneToMany(mappedBy = "accountOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccountEntity> accounts = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TransactionEntity> transactions = new ArrayList<>();
+//    @OneToMany
+//    @JoinColumn(name = "account_owner_user_id")
+//    private List<AccountEntity> ownedAccounts;
+//
+//    @OneToMany
+//    @JoinColumn(name = "transaction_owner_user_id")
+//    private List<TransactionEntity> ownedTransactions;
+}   
 

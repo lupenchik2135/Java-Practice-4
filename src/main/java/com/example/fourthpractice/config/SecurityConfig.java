@@ -26,21 +26,19 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf().disable()
                 .sessionManagement(custom -> custom.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .authorizeHttpRequests(customizer ->
                         customizer
-                                .requestMatchers(HttpMethod.POST,"auth/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"auth/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "auth/**").permitAll()
                                 .requestMatchers("error/**").permitAll()
+                                .requestMatchers("admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
-
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 

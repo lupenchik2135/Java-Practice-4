@@ -4,6 +4,7 @@ import com.example.fourthpractice.entities.UserEntity;
 import com.example.fourthpractice.models.enums.UserRole;
 import com.example.fourthpractice.repositories.AccountRepository;
 import com.example.fourthpractice.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,19 +19,19 @@ public class UserDao {
     private final AccountRepository accountRepository;
 
 
-    public boolean isUserExist(String email){
+    public boolean isUserExist(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public UUID getUserIdByEmail(String email){
+    public UUID getUserIdByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow().getUserId();
     }
 
-    public String getEmailById(UUID userId){
+    public String getEmailById(UUID userId) {
         return userRepository.findById(userId).orElseThrow().getEmail();
     }
-
-    public UserEntity createUser(String email, String password, UserRole role){
+    @Transactional
+    public UserEntity createUser(String email, String password, UserRole role) {
 
         return userRepository.save(UserEntity.builder()
                 .email(email)
@@ -40,30 +41,22 @@ public class UserDao {
                 .build());
 
     }
-    public boolean deleteUser(String email, String password){
-        if(userRepository.findByEmail(email).get() != null){
-            userRepository.findByEmail(email).get().getOwnedAccounts().forEach(accountEntity -> accountRepository.delete(accountEntity));
-            userRepository.deleteById(userRepository.findByEmail(email).get().getUserId());
-            return true;
-        }
-        return false;
-    }
 
-    public UserEntity getUserByEmail(String email){
+@Transactional
+    public void  deleteById(UUID userId){
+
+        userRepository.deleteById(userId);
+    }
+    public UserEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
-    public UserEntity getUserById(UUID userId){
-        System.out.println(userId);
+
+    public UserEntity getUserById(UUID userId) {
         return userRepository.findById(userId).orElseThrow();
     }
 
-    public String getPasswordHash(String email){
+    public String getPasswordHash(String email) {
         return userRepository.findByEmail(email).orElseThrow().getPassword();
     }
 
 }
-//    public void deleteUser(String email, String password){
-//        if(isUserExist(email) && userRepository.findByEmail(email).get().getPassword() == password) {
-//            userRepository.delete(userRepository.findByEmail(email).orElseThrow());
-//        }
-//    }

@@ -2,7 +2,6 @@ package com.example.fourthpractice.service;
 
 import com.example.fourthpractice.dao.UserDao;
 import com.example.fourthpractice.entities.UserEntity;
-import com.example.fourthpractice.messages.requests.UserDeleteRequest;
 import com.example.fourthpractice.messages.requests.UserLoginRequest;
 import com.example.fourthpractice.messages.requests.UserRegisterRequest;
 import com.example.fourthpractice.models.TokenModel;
@@ -12,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
@@ -32,8 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenModel register(UserRegisterRequest registerRequest) {
-        if(userDao.getUserByEmail(registerRequest.getEmail()) != null){
-            throw new SecurityException("Пользователь с таким email уже существует.");
+        if (userDao.getUserByEmail(registerRequest.getEmail()) != null) {
+            throw new IllegalArgumentException("Пользователь с таким email уже существует.");
         }
 
         UserEntity newUser = userDao.createUser(
@@ -54,12 +55,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenModel login(UserLoginRequest loginRequest) {
-        if(!userDao.isUserExist(loginRequest.getEmail())){
+        if (!userDao.isUserExist(loginRequest.getEmail())) {
             log.info("User not found");
             throw new UsernameNotFoundException("User not found");
         }
 
-        if(!passwordEncoder.matches(loginRequest.getPassword(), userDao.getPasswordHash(loginRequest.getEmail()))){
+        if (!passwordEncoder.matches(loginRequest.getPassword(), userDao.getPasswordHash(loginRequest.getEmail()))) {
             throw new UsernameNotFoundException("Password not match");
         }
 
@@ -67,17 +68,21 @@ public class UserServiceImpl implements UserService {
 
         return new TokenModel(user.getEmail(), jwtService.generateToken(user), null);
     }
-    public String delete(UserDeleteRequest userDeleteRequest){
-        if(userDao.getUserById(jwtService.parseToken(getTokenFromHeader()).getUserId()) != null){
-            userDao.deleteUser(userDeleteRequest.getEmail(), userDeleteRequest.getPassword());
-            return "Пользователь полностью удалён";
-        }
-        return "В доступе отказано";
+    @Override
+    public String deleteUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        UserEntity user = userDao.getUserByEmail(authentication.getName());
+
+        userDao.deleteById(user.getUserId());
+        String message = "Пользователь полностью удалён";
+        return message;
     }
-    private String getTokenFromHeader(){
+
+    private String getTokenFromHeader() {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         System.out.println(header);
-        if(ObjectUtils.isEmpty(header)){
+        if (ObjectUtils.isEmpty(header)) {
             return null;
         }
         return header;

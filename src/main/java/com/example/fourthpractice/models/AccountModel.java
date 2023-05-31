@@ -15,22 +15,19 @@ import java.util.UUID;
 @Builder
 public class AccountModel {
     float money;
-    UserEntity ownerAccount;
-    UUID accountId;
+    String ownerAccountEmail;
+    int accountId;
 
     public static AccountModel fromEntity(AccountEntity accountEntity) {
         return new AccountModel(
                 accountEntity.getMoney(),
-                accountEntity.getAccountOwner(),
+                accountEntity.getAccountOwner().getEmail(),
                 accountEntity.getAccountId()
         );
     }
 
-    public float getMoney() {
-        return money;
-    }
-    public UUID getAccountId() {return accountId; }
-    public UUID getOwnerAccountId() { return ownerAccount.getUserId(); }
+
+
 }
 
 
